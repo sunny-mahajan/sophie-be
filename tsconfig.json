@@ -4,33 +4,34 @@
     "target": "ES2020",
 
     /* Modules */
-    "module": "commonjs" /* Specify what module code is generated. */,
+    "module": "commonjs",
 
     /* Type Checking */
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
 
-    "rootDir": "./src",
+    /* Paths and Aliases */
+    "rootDir": "./",
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@lib/*": ["src/lib/*"],
-      "@routes/*": ["src/routes/*"],
-      "@routes": ["src/routes"],
-      "@types/*": ["src/types/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@models/*": ["src/database/models/*"],
-      "@services/*": ["src/services/*"],
-      "@repositories/*": ["src/repositories/*"],
-      "@config/*": ["src/config/*"],
-      "@utils/*": ["src/utils/*"]
+      "@lib/*": ["lib/*"],
+      "@routes/*": ["routes/*"],
+      "@routes": ["routes"],
+      "@types/*": ["types/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@controllers/*": ["controllers/*"],
+      "@models/*": ["database/models/*"],
+      "@services/*": ["services/*"],
+      "@repositories/*": ["repositories/*"],
+      "@config/*": ["config/*"],
+      "@utils/*": ["utils/*"]
     },
     "moduleResolution": "node",
-    "typeRoots": ["./src/types", "./node_modules/@types"]
+    "typeRoots": ["types", "./node_modules/@types"]
   },
-  "include": ["src/**/*.ts", "src/config/*.pem"],
+  "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }
