@@ -5,11 +5,13 @@ export const ROLES = {
 } as const;
 
 export const PERMISSIONS = {
-  MANAGE_USERS: "MANAGE_USERS",
-  MANAGE_ROLES: "MANAGE_ROLES",
+  VIEW_SOPS: "VIEW_SOPS",
+  VIEW_TRAININGS: "VIEW_TRAININGS",
   VIEW_REPORTS: "VIEW_REPORTS",
-  EDIT_SETTINGS: "EDIT_SETTINGS",
+  DELETE_USER: "DELETE_USER",
 } as const;
+
+export const SUPER_ADMIN_EMAIL = "superadmin@sophie.com";
 
 export enum ENTITY_TYPE {
   SUPER_ADMIN = "SUPER_ADMIN",

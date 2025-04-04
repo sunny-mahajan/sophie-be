@@ -1,7 +1,7 @@
 "use strict";
 
 require("ts-node/register");
-const { getHashedPassword } = require("../utils/helpers.ts");
+const { getHashedPassword } = require("../../utils/helpers.ts");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

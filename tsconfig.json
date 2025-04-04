@@ -22,7 +22,7 @@
       "@types/*": ["src/types/*"],
       "@middlewares/*": ["src/middlewares/*"],
       "@controllers/*": ["src/controllers/*"],
-      "@models/*": ["src/models/*"],
+      "@models/*": ["src/database/models/*"],
       "@services/*": ["src/services/*"],
       "@repositories/*": ["src/repositories/*"],
       "@config/*": ["src/config/*"],

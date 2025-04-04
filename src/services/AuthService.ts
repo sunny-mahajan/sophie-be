@@ -3,7 +3,7 @@ import joi from "joi";
 import jwt from "jsonwebtoken";
 import { Transaction } from "sequelize";
 import { ERROR_MESSAGES } from "../config/errorMessages";
-import User from "../models/User";
+import User from "../database/models/User";
 
 const PHONE_PATTERN = /^\(\d{3}\) \d{3}-\d{4}$/;
 
