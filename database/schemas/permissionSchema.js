@@ -10,6 +10,15 @@ module.exports = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  parent_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: "permissions", // Self-referencing table
+      key: "id",
+    },
+    onDelete: "SET NULL", // If parent is deleted, sub-permissions are set to NULL
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,

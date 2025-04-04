@@ -6,7 +6,7 @@ module.exports = {
     autoIncrement: true,
     primaryKey: true,
   },
-  user_id: {
+  role_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     onDelete: "CASCADE",

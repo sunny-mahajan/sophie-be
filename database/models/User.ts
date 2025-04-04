@@ -1,5 +1,6 @@
 import { Model, InferAttributes, InferCreationAttributes } from "sequelize";
 import sequelize from "@lib/db";
+import { COMMON_MODEL_OPTIONS } from "@config/appConstants";
 
 const userSchema = require("../schemas/userSchema");
 
@@ -10,12 +11,7 @@ class User extends Model<
 
 User.init(userSchema, {
   sequelize,
-  tableName: "users",
-  paranoid: true,
-  timestamps: true,
-  createdAt: "created_at",
-  updatedAt: "updated_at",
-  deletedAt: "deleted_at",
+  ...COMMON_MODEL_OPTIONS,
 });
 
 export default User;

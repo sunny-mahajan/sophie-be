@@ -8,10 +8,19 @@ export const PERMISSIONS = {
   VIEW_SOPS: "VIEW_SOPS",
   VIEW_TRAININGS: "VIEW_TRAININGS",
   VIEW_REPORTS: "VIEW_REPORTS",
-  DELETE_USER: "DELETE_USER",
+  MANAGE_USER: {
+    DELETE_USER: "DELETE_USER",
+    EDIT_USER: "EDIT_USER",
+    CREATE_USER: "CREATE_USER",
+  },
 } as const;
 
 export const SUPER_ADMIN_EMAIL = "superadmin@sophie.com";
+
+export const COMMON_MODEL_OPTIONS = {
+  paranoid: true,
+  timestamps: true,
+};
 
 export enum ENTITY_TYPE {
   SUPER_ADMIN = "SUPER_ADMIN",
