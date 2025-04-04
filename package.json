@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
-    "dev:app": "nodemon --watch src --ext ts,js --exec node -r esbuild-register src/index.ts",
+    "dev": "nodemon --watch src --ext ts,js --exec node -r esbuild-register src/index.ts",
     "db:setup": "ts-node -r tsconfig-paths/register ./src/lib/dbSetup.ts",
     "migrate": "sequelize-cli db:migrate",
     "seed": "sequelize-cli db:seed:all"
