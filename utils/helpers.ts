@@ -109,3 +109,7 @@ export const getPreviousYearDate = (date: Date) => {
   previousYearDate.setFullYear(previousYearDate.getFullYear() - 1); // Subtract one year
   return previousYearDate;
 };
+
+export const dumpModelData = (modelData: any) => {
+  console.log(JSON.stringify(modelData?.toJSON(), null, 2));
+};

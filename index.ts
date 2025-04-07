@@ -9,9 +9,6 @@ import setupSwagger from "@lib/swagger";
 import routes from "@routes";
 import { sendErrorResponse } from "@utils/responseHandler";
 
-import sequelize from "@lib/db";
-// Load environment variables from .env file
-
 import logger from "@lib/logger";
 
 const app = express();

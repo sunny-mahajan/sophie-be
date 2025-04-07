@@ -2,8 +2,8 @@ export interface UserType {
   id: number;
   email: string;
   passwordHash: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   city: string;
   state: string;
   phone: string;
@@ -25,8 +25,8 @@ export interface getUserByIdApiRes {
 
 export interface updateProfileDetailsReqBody {
   userID: number;
-  firstName?: string;
-  lastName?: string;
+  first_name?: string;
+  last_name?: string;
   phone?: string;
   secondaryPhone?: string;
   address?: string;

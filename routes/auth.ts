@@ -57,9 +57,9 @@ const router: Router = Router();
  *                       type: number
  *                     email:
  *                       type: string
- *                     firstName:
+ *                     first_name:
  *                       type: string
- *                     lastName:
+ *                     last_name:
  *                       type: string
  *                     role:
  *                       type: string

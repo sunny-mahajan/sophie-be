@@ -23,6 +23,7 @@
       "@types/*": ["types/*"],
       "@middlewares/*": ["middlewares/*"],
       "@controllers/*": ["controllers/*"],
+      "@models": ["database/models/index.ts"],
       "@models/*": ["database/models/*"],
       "@services/*": ["services/*"],
       "@repositories/*": ["repositories/*"],

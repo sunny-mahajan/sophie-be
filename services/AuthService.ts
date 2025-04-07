@@ -4,14 +4,17 @@ import jwt from "jsonwebtoken";
 import { Transaction } from "sequelize";
 import { ERROR_MESSAGES } from "../config/errorMessages";
 import User from "../database/models/User";
+import UserService from "@services/UserService";
+import UserRepository from "@repositories/UserRepository";
+import sequelize from "@lib/db";
 
 const PHONE_PATTERN = /^\(\d{3}\) \d{3}-\d{4}$/;
 
 const SIGNUP_PAYLOAD_SCHEMA = joi.object({
   token: joi.string().required(),
   email: joi.string().email().min(1).max(255).required(),
-  firstName: joi.string().min(1).max(255).required(),
-  lastName: joi.string().min(1).max(255).required(),
+  first_name: joi.string().min(1).max(255).required(),
+  last_name: joi.string().min(1).max(255).required(),
   phones: joi
     .array()
     .items(joi.string().pattern(PHONE_PATTERN).required())
@@ -34,8 +37,8 @@ const INVITE_PAYLOAD_SCHEMA = joi.object({
   parentUserId: joi.number().required(), // Not sent by FE, added in payload later in BE
   parentUserRole: joi.string().required(), // Not sent by FE, added in payload later in BE
   email: joi.string().email().min(1).max(255).required(),
-  firstName: joi.string().min(1).max(255).required(),
-  lastName: joi.string().min(1).max(255).required(),
+  first_name: joi.string().min(1).max(255).required(),
+  last_name: joi.string().min(1).max(255).required(),
   phones: joi
     .array()
     .items(joi.string().pattern(PHONE_PATTERN).required())
@@ -57,8 +60,8 @@ interface AuthResult {
   user: {
     id: number;
     email: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     role: string;
     associatedUserId: number;
     parentEntityId: number | null;
@@ -70,7 +73,7 @@ interface AuthResult {
 
 interface TokenPayload {
   id: number;
-  userId: number;
+  userId?: number;
   email: string;
   role?: string;
   associatedUserId?: number;
@@ -86,81 +89,39 @@ interface EmailInviteType {
 class AuthService {
   constructor() {}
 
-  /**
-   * Authenticate a user with email and password
-   */
-  public async login(
-    email: string,
-    password: string,
-    rememberMe: boolean = false
-  ): Promise<AuthResult> {
-    const sequelize = User.sequelize;
-    if (!sequelize) {
-      throw new Error("Sequelize instance is not available");
-    }
+  async login(email: string, password: string, rememberMe: boolean = false) {
+    // Start transaction
 
-    let transaction: Transaction | null = null;
+    let transaction: Transaction | null = await sequelize.transaction();
 
     try {
-      // Start transaction
-      transaction = await sequelize.transaction();
+      const user = await UserService.getUserWithRolesAndPermissions(email);
 
-      // Get user with role using Sequelize
-      const user = await User.findOne({
-        where: {
-          email: email.toLowerCase(),
-        },
+      if (
+        !user ||
+        !user.password_hash ||
+        !(await bcrypt.compare(password, user.password_hash))
+      ) {
+        throw new Error(ERROR_MESSAGES.AUTH.AUTHENTICATION_FAILED);
+      }
+
+      // Token logic
+      const refreshToken = this.generateRefreshToken(user.id);
+      await UserRepository.updateRefreshToken(user.id, refreshToken, {
+        transaction,
       });
 
-      if (!user || !user?.password_hash) {
-        throw new Error(ERROR_MESSAGES.AUTH.AUTHENTICATION_FAILED);
-      }
+      const accessToken = this.generateAccessToken(user, rememberMe);
 
-      // Verify password
-      const validPassword = await bcrypt.compare(password, user.password_hash);
-      if (!validPassword) {
-        throw new Error(ERROR_MESSAGES.AUTH.AUTHENTICATION_FAILED);
-      }
-
-      // Generate tokens
-      const tokenPayload: TokenPayload = {
-        userId: user.id,
+      const userData: any = {
         id: user.id,
         email: user.email,
-        // role: user.UserRole.role,
-        // associatedUserId: user.UserRole.associatedUserId,
-        // parentEntityId: user.UserRole.parentEntityId,
-        // parentEntityType: user.UserRole.parentEntityType,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        roles: user.roles,
       };
-
-      const accessToken = this.generateAccessToken(tokenPayload, rememberMe);
-      const refreshToken = this.generateRefreshToken(user.id);
-
-      // // Update refresh token in database
-      // Update refresh token in database using Sequelize
-      await user.update(
-        {
-          refreshToken,
-          updatedAt: new Date(),
-        },
-        { transaction }
-      );
 
       await transaction.commit();
-
-      // Prepare user data payload
-      let userData: any = {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        // role: user.UserRole.role,
-        // associatedUserId: user.UserRole.associatedUserId,
-        // parentEntityId: user.UserRole.parentEntityId,
-        // parentEntityType: user.UserRole.parentEntityType,
-      };
-
-      // Return authentication result
       return {
         accessToken,
         refreshToken,
@@ -171,7 +132,7 @@ class AuthService {
           : process.env.JWT_EXPIRATION || "24h",
       };
     } catch (error) {
-      await (transaction ?? undefined)?.rollback();
+      await transaction.rollback();
       throw error;
     }
   }
