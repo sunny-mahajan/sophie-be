@@ -11,7 +11,7 @@ export const PERMISSIONS = {
   MANAGE_USER: {
     DELETE_USER: "DELETE_USER",
     EDIT_USER: "EDIT_USER",
-    CREATE_USER: "CREATE_USER",
+    INVITE_USERS: "INVITE_USERS",
   },
 } as const;
 
@@ -59,7 +59,7 @@ export const USER_STATUS = {
   DEACTIVE: "DEACTIVE",
 };
 
-export const SIGNUP_INVITATION_STATUS = {
+export const INVITATION_STATUS = {
   CANCELED: "canceled",
   PENDING: "pending",
   COMPLETED: "completed",

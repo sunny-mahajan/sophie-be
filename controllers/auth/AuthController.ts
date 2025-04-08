@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import rateLimit from "express-rate-limit";
-import { ENTITY_TYPE } from "@config/appConstants";
 import { ERROR_MESSAGES } from "@config/errorMessages";
 import { ApiError } from "@lib/errors/APIError";
 import AuthService from "@services/AuthService";
 import { validateEmail } from "@utils/helpers";
 import { sendErrorResponse, sendSuccessResponse } from "@utils/responseHandler";
+import { InvitedUserType } from "types/types";
 
 export const getLoginRateLimiterKey = (req: Request): string => {
   return req.body.email || req.ip;
@@ -74,6 +74,75 @@ export class AuthController {
 
       return sendErrorResponse(res, errorMessage, 401);
     }
+  }
+
+  public async inviteUsers(req: Request, res: Response) {
+    try {
+      const { invitedUsers }: { invitedUsers: InvitedUserType[] } = req.body;
+
+      // Validate each email address
+      const invalidEmails = invitedUsers.filter(
+        (user) => !validateEmail(user.email)
+      );
+      if (invalidEmails.length > 0) {
+        const emails = invalidEmails.map((user) => user.email);
+        throw new Error(
+          `Invalid email addresses detected. Please correct the following before proceeding: ${emails.join(
+            ", "
+          )}`
+        );
+      }
+
+      // Call the service function to invite users
+      await AuthService.inviteUsers(invitedUsers, req.user!);
+
+      // Respond with a success message
+      sendSuccessResponse(res, {
+        message: "Invitations sent successfully",
+      });
+    } catch (error: any) {
+      // Handle any errors that occur during the process
+      const errorMessage =
+        error instanceof Error ? error.message : "Send invitation failed";
+
+      sendErrorResponse(res, errorMessage, 422);
+    }
+  }
+
+  public async getInvitationDetails(req: Request, res: Response) {
+    try {
+      // Extract the token from the request body
+      const { token } = req.query as { token: string };
+
+      // Call the service function to get invitation object
+      const invitation = await AuthService.getInvitationDetails(token);
+
+      // Respond with a success message
+      sendSuccessResponse(res, invitation);
+    } catch (error: any) {
+      // Handle any errors that occur during the process
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+
+      sendErrorResponse(res, errorMessage, 422);
+    }
+  }
+  public async signUpThroughInvitation(req: Request, res: Response) {
+    const {
+      token = "",
+      email,
+      firstName,
+      lastName,
+      phone,
+      password,
+      address,
+      city,
+      state,
+      zip,
+      imageUrl,
+    } = req.body;
   }
 }
 
