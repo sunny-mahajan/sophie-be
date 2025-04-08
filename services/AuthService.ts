@@ -113,19 +113,11 @@ class AuthService {
 
       const accessToken = this.generateAccessToken(user, rememberMe);
 
-      const userData: any = {
-        id: user.id,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        roles: user.roles,
-      };
-
       await transaction.commit();
       return {
         accessToken,
         refreshToken,
-        user: userData,
+        user: user,
         loginTime: Date(),
         expiresIn: rememberMe
           ? process.env.JWT_LONG_EXPIRATION || "30d"
@@ -149,7 +141,7 @@ class AuthService {
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: longExpiry ? "30d" : "24h",
+      expiresIn: process.env.JWT_EXPIRATION ?? "24h",
     });
   }
 
@@ -162,7 +154,7 @@ class AuthService {
     }
 
     return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: "7d",
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? "7d",
     });
   }
 }
