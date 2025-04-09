@@ -19,7 +19,7 @@ const router = Router();
  *           type: string
  *         description: Filter by status
  *       - in: query
- *         name: fullName
+ *         name: name
  *         schema:
  *           type: string
  *         description: Filter by user's full name (first or last)

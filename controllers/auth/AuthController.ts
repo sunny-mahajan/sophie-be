@@ -131,9 +131,9 @@ export class AuthController {
   }
   public async signUpThroughInvitation(req: Request, res: Response) {
     try {
-      const { fullName, ...rest } = req.body;
+      const { name, ...rest } = req.body;
 
-      const [firstName, ...lastNameParts] = fullName.trim().split(" ");
+      const [firstName, ...lastNameParts] = name.trim().split(" ");
       const lastName = lastNameParts.join(" ");
 
       const data = await AuthService.signUpThroughInvitation({

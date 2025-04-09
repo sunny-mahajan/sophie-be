@@ -3,7 +3,7 @@ import UserRepository from "@repositories/UserRepository";
 class TeamService {
   public async getTeamList(filter: {
     status?: string;
-    fullName?: string;
+    name?: string;
     page?: number;
     limit?: number;
   }) {

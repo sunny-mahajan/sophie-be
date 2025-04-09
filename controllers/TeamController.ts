@@ -9,7 +9,7 @@ class TeamController {
       const authUser = req.user;
       const filter = {
         status: req.query.status as string,
-        fullName: req.query.fullName as string,
+        name: req.query.name as string,
         page: req.query.page ? parseInt(req.query.page as string) : undefined,
         limit: req.query.limit
           ? parseInt(req.query.limit as string)

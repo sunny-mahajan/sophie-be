@@ -216,8 +216,7 @@ router.get("/invitation-details", AuthController.getInvitationDetails);
  *             required:
  *               - token
  *               - email
- *               - firstName
- *               - lastName
+ *               - name
  *               - phone
  *               - password
  *               - streetAddress
@@ -232,12 +231,9 @@ router.get("/invitation-details", AuthController.getInvitationDetails);
  *                 type: string
  *                 format: email
  *                 description: Email of the invited user
- *               firstName:
+ *               name:
  *                 type: string
- *                 description: First name of the user
- *               lastName:
- *                 type: string
- *                 description: Last name of the user
+ *                 description: Name of the user
  *               phone:
  *                 type: string
  *                 description: Phone number of the user
@@ -265,8 +261,7 @@ router.get("/invitation-details", AuthController.getInvitationDetails);
  *           example:
  *             token: "your-invitation-token"
  *             email: "john@example.com"
- *             firstName: "John"
- *             lastName: "Doe"
+ *             name: "John Doe"
  *             phone: "(123) 456-7890"
  *             password: "SecureP@ss123"
  *             streetAddress: "123 Main Street"

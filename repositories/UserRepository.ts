@@ -46,7 +46,7 @@ class UserRepository {
   }
   public async getTeamList(filter: {
     status?: string;
-    fullName?: string;
+    name?: string;
     excludeUserId?: number;
     page?: number;
     limit?: number;
@@ -56,10 +56,10 @@ class UserRepository {
       where.id = { [Op.ne]: filter.excludeUserId };
     }
     if (filter.status) where.status = filter.status;
-    if (filter.fullName) {
+    if (filter.name) {
       where[Op.or] = [
-        { firstName: { [Op.iLike]: `%${filter.fullName}%` } },
-        { lastName: { [Op.iLike]: `%${filter.fullName}%` } },
+        { firstName: { [Op.iLike]: `%${filter.name}%` } },
+        { lastName: { [Op.iLike]: `%${filter.name}%` } },
       ];
     }
 
