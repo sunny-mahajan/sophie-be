@@ -94,19 +94,22 @@ class AuthService {
         throw new Error(ERROR_MESSAGES.AUTH.AUTHENTICATION_FAILED);
       }
 
+      // Exclude sensitive information from token payload
+      const { passwordHash, ...sanitizedUser } = user;
+
       // Token logic
       const refreshToken = this.generateRefreshToken(user.id);
       await UserRepository.updateRefreshToken(user.id, refreshToken, {
         transaction,
       });
 
-      const accessToken = this.generateAccessToken(user, rememberMe);
+      const accessToken = this.generateAccessToken(sanitizedUser, rememberMe);
 
       await transaction.commit();
       return {
         accessToken,
         refreshToken,
-        user: user,
+        user: sanitizedUser,
         loginTime: Date(),
         expiresIn: rememberMe
           ? process.env.JWT_LONG_EXPIRATION || "30d"
