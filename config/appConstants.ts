@@ -1,7 +1,8 @@
 export const ROLES = {
-  SUPER_ADMIN: "SUPER_ADMIN",
-  ADMIN: "ADMIN",
-  USER: "USER",
+  FULL_SUPER_ADMIN: "Full Super Admin",
+  SUPPORT_ADMIN: "Support Admin",
+  ACCOUNT_MANAGER: "Account Manager",
+  READ_ONLY_ADMIN: "Read-Only Admin",
 } as const;
 
 export const PERMISSIONS = {
@@ -21,12 +22,6 @@ export const COMMON_MODEL_OPTIONS = {
   paranoid: true,
   timestamps: true,
 };
-
-export enum ENTITY_TYPE {
-  SUPER_ADMIN = "SUPER_ADMIN",
-  ADMIN = "ADMIN",
-  USER = "USER",
-}
 
 export const PHONE_PATTERN = /^\(\d{3}\) \d{3}-\d{4}$/;
 

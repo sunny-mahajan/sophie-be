@@ -14,18 +14,6 @@ module.exports = {
         email: SUPER_ADMIN_EMAIL,
         password: "$up3r@dm1n",
       },
-      {
-        first_name: "App",
-        last_name: "Admin",
-        email: "admin@sophie.com",
-        password: "admin@123",
-      },
-      {
-        first_name: "Normal",
-        last_name: "User",
-        email: "user@sophie.com",
-        password: "user@123",
-      },
     ];
 
     const hashedUsers = await Promise.all(
@@ -52,7 +40,7 @@ module.exports = {
 
   down: async (queryInterface) => {
     await queryInterface.bulkDelete("users", {
-      email: [SUPER_ADMIN_EMAIL, "admin@sophie.com", "user@sophie.com"],
+      email: [SUPER_ADMIN_EMAIL],
     });
   },
 };

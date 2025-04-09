@@ -7,8 +7,8 @@ const requirePermission = (requiredPermission: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    // Bypass if Super Admin
-    if (user?.roles?.includes(ROLES.SUPER_ADMIN)) {
+    // Bypass if Full Super Admin
+    if (user?.roles?.includes(ROLES.FULL_SUPER_ADMIN)) {
       return next();
     }
 

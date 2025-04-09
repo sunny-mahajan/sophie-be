@@ -29,7 +29,7 @@ module.exports = {
       {
         type: queryInterface.sequelize.QueryTypes.SELECT,
         replacements: {
-          roleNames: [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.USER],
+          roleNames: [ROLES.FULL_SUPER_ADMIN],
         },
       }
     );
@@ -44,19 +44,7 @@ module.exports = {
     const userRolesData = [
       {
         user_id: emailToUserId[SUPER_ADMIN_EMAIL],
-        role_id: roleNameToId[ROLES.SUPER_ADMIN],
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        user_id: emailToUserId["admin@sophie.com"],
-        role_id: roleNameToId[ROLES.ADMIN],
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        user_id: emailToUserId["user@sophie.com"],
-        role_id: roleNameToId[ROLES.USER],
+        role_id: roleNameToId[ROLES.FULL_SUPER_ADMIN],
         created_at: now,
         updated_at: now,
       },
@@ -70,7 +58,7 @@ module.exports = {
       where: {
         user_id: {
           [queryInterface.sequelize.Op.in]: queryInterface.sequelize.literal(
-            `(SELECT id FROM users WHERE email IN ('superadmin@sophie.com', 'admin@sophie.com', 'user@sophie.com'))`
+            `(SELECT id FROM users WHERE email IN ('superadmin@sophie.com'))`
           ),
         },
       },

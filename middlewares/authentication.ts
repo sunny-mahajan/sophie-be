@@ -2,16 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { HttpStatus } from "../config/HttpStatus";
 import { ERROR_MESSAGES } from "../config/errorMessages";
-import { ENTITY_TYPE } from "../config/appConstants";
-
-export interface JWTPayload {
-  id: number;
-  role: ENTITY_TYPE;
-}
-
-export interface AuthenticatedRequest extends Request {
-  user?: JWTPayload & { id: number };
-}
+import { AuthUser } from "types/types";
 
 /**
  * Middleware to authenticate incoming requests.
@@ -24,7 +15,7 @@ export interface AuthenticatedRequest extends Request {
  */
 export const authenticate = () => {
   return async (
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
@@ -53,12 +44,9 @@ export const authenticate = () => {
 
       try {
         // Verify the token and extract the user data
-        const decoded = jwt.verify(
-          token,
-          process.env.JWT_SECRET!
-        ) as JWTPayload;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!);
 
-        req.user = decoded;
+        req.user = decoded as AuthUser;
         next();
       } catch (error) {
         // Handle invalid tokens
