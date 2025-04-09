@@ -131,7 +131,16 @@ export class AuthController {
   }
   public async signUpThroughInvitation(req: Request, res: Response) {
     try {
-      const data = await AuthService.signUpThroughInvitation(req.body);
+      const { fullName, ...rest } = req.body;
+
+      const [firstName, ...lastNameParts] = fullName.trim().split(" ");
+      const lastName = lastNameParts.join(" ");
+
+      const data = await AuthService.signUpThroughInvitation({
+        ...rest,
+        firstName,
+        lastName,
+      });
       sendSuccessResponse(res, data);
     } catch (error) {
       const errorMessage =

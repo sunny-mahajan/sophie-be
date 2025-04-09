@@ -222,7 +222,7 @@ class AuthService {
       const invitation: Invitation =
         await InvitationRepository.getInvitationDetails(params.token);
 
-      const { token, password, ...rest } = params;
+      const { token, password, firstName, lastName } = params;
 
       const { role, email } = invitation;
 
@@ -230,18 +230,23 @@ class AuthService {
 
       transaction = await sequelize.transaction();
 
-      const user = await UserRepository.create({
-        ...rest,
-        passwordHash,
-      });
+      const user = await UserRepository.create(
+        {
+          email,
+          passwordHash,
+          firstName,
+          lastName,
+        },
+        transaction
+      );
 
       // Get role id
       const roles = await RoleRepository.getRolesByNames([role]);
       const roleIds = roles.map((role) => role.id);
 
-      await UserRoleRepository.assignRolesToUser(user.id, roleIds);
+      await UserRoleRepository.assignRolesToUser(user.id, roleIds, transaction);
 
-      InvitationRepository.markInvitationAsCompleted(token);
+      await InvitationRepository.markInvitationAsCompleted(token, transaction);
 
       await transaction?.commit();
 
