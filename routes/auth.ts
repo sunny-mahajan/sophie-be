@@ -267,7 +267,7 @@ router.get("/invitation-details", AuthController.getInvitationDetails);
  *             email: "john@example.com"
  *             firstName: "John"
  *             lastName: "Doe"
- *             phone: "+1234567890"
+ *             phone: "(123) 456-7890"
  *             password: "SecureP@ss123"
  *             streetAddress: "123 Main Street"
  *             city: "New York"

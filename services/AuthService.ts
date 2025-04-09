@@ -75,7 +75,11 @@ interface TokenPayload {
 class AuthService {
   constructor() {}
 
-  async login(email: string, password: string, rememberMe: boolean = false) {
+  public async login(
+    email: string,
+    password: string,
+    rememberMe: boolean = false
+  ) {
     // Start transaction
     let transaction: Transaction | null = await sequelize.transaction();
 
@@ -239,7 +243,8 @@ class AuthService {
       await transaction?.commit();
 
       await sendWelcomeEmail(email, user.fullName);
-      return user;
+
+      return await this.login(email, password, false);
     } catch (error) {
       await transaction?.rollback();
       throw error;

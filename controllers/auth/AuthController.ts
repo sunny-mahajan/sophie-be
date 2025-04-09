@@ -131,10 +131,8 @@ export class AuthController {
   }
   public async signUpThroughInvitation(req: Request, res: Response) {
     try {
-      await AuthService.signUpThroughInvitation(req.body);
-      sendSuccessResponse(res, {
-        message: "Sign Up Successful",
-      });
+      const data = await AuthService.signUpThroughInvitation(req.body);
+      sendSuccessResponse(res, data);
     } catch (error) {
       const errorMessage =
         error instanceof Error
