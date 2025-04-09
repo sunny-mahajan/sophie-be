@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 class TeamController {
   public async getTeamList(req: Request, res: Response) {
     try {
+      const authUser = req.user;
       const filter = {
         status: req.query.status as string,
         fullName: req.query.fullName as string,
@@ -13,6 +14,7 @@ class TeamController {
         limit: req.query.limit
           ? parseInt(req.query.limit as string)
           : undefined,
+        excludeUserId: authUser?.id,
       };
 
       const result = await TeamService.getTeamList(filter);

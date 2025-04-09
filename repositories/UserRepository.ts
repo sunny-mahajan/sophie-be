@@ -47,10 +47,14 @@ class UserRepository {
   public async getTeamList(filter: {
     status?: string;
     fullName?: string;
+    excludeUserId?: number;
     page?: number;
     limit?: number;
   }) {
     const where: any = {};
+    if (filter.excludeUserId) {
+      where.id = { [Op.ne]: filter.excludeUserId };
+    }
     if (filter.status) where.status = filter.status;
     if (filter.fullName) {
       where[Op.or] = [
