@@ -1,36 +1,51 @@
-import { Model, NonAttribute } from "sequelize";
+import { DataTypes, Model, NonAttribute } from "sequelize";
 import sequelize from "@lib/db";
 import { COMMON_MODEL_OPTIONS } from "@config/appConstants";
 import { Role } from "@models";
+import { IUserAttributes, IUserCreateAttributes } from "types/user";
 
 const userSchema = require("../schemas/userSchema");
 
-class User extends Model {
+class User extends Model<IUserAttributes, IUserCreateAttributes> {
   declare id: number;
   declare email: string;
-  declare password_hash: string;
-  declare first_name: string;
-  declare last_name: string;
-  declare street_address: string;
+  declare passwordHash: string;
+  declare firstName: string;
+  declare lastName: string;
+  declare streetAddress: string;
   declare city: string;
   declare state: string;
   declare zip: number;
   declare phone: string;
-  declare refresh_token: string;
-  declare is_active: boolean;
+  declare refreshToken: string;
+  declare isActive: boolean;
   declare status: string;
-  declare last_login: Date;
-  declare created_at: Date;
-  declare updated_at: Date;
-  declare deleted_at: Date;
+  declare lastLogin: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt: Date;
+
+  // Virtual fields
+  declare fullName: NonAttribute<string>;
 
   // Associations
   declare roles: NonAttribute<Role[]>;
 }
 
-User.init(userSchema, {
-  sequelize,
-  ...COMMON_MODEL_OPTIONS,
-});
+User.init(
+  {
+    ...userSchema,
+    fullName: {
+      type: DataTypes.VIRTUAL,
+      get(this: User) {
+        return `${this.firstName} ${this.lastName}`.trim();
+      },
+    },
+  },
+  {
+    sequelize,
+    ...COMMON_MODEL_OPTIONS,
+  }
+);
 
 export default User;

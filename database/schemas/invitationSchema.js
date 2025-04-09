@@ -17,37 +17,44 @@ module.exports = {
   token: {
     type: DataTypes.STRING,
   },
-  invited_by: {
+  invitedBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    field: "invited_by",
   },
-  invited_user: {
+  invitedUser: {
     type: DataTypes.INTEGER,
     allowNull: true,
+    field: "invited_user",
   },
   status: {
     type: DataTypes.STRING,
     defaultValue: "pending",
   },
-  expires_at: {
+  expiresAt: {
     type: DataTypes.DATE,
+    field: "expires_at",
   },
-  completed_at: {
+  completedAt: {
     type: DataTypes.DATE,
+    field: "completed_at",
   },
-  created_at: {
+  createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
+    field: "created_at",
   },
-  updated_at: {
+  updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
     onUpdate: DataTypes.NOW,
+    field: "updated_at",
   },
-  deleted_at: {
+  deletedAt: {
     type: DataTypes.DATE,
     allowNull: true,
+    field: "deleted_at",
   },
 };

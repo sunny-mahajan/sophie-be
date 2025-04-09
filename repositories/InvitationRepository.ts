@@ -1,7 +1,8 @@
 import { AuthUser } from "types/types";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { dumpModelData, getExpiresAtTime } from "@utils/helpers";
 import { Invitation } from "@models";
+import { INVITATION_STATUS } from "@config/appConstants";
 
 class InvitationRepository {
   public async saveInvitation(
@@ -22,11 +23,11 @@ class InvitationRepository {
         // If an invitation already exists, update it
         await existingInvitation.update(
           {
-            expires_at: expiresAt,
+            expiresAt: expiresAt,
             token,
             role,
-            invited_by: user.id,
-            updated_at: new Date(),
+            invitedBy: user.id,
+            updatedAt: new Date(),
           },
           { transaction: options?.transaction }
         );
@@ -37,10 +38,10 @@ class InvitationRepository {
             email,
             role,
             token,
-            expires_at: expiresAt,
-            invited_by: user.id,
-            created_at: new Date(),
-            updated_at: new Date(),
+            expiresAt: expiresAt,
+            invitedBy: user.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
           },
           { transaction: options?.transaction }
         );
@@ -54,16 +55,21 @@ class InvitationRepository {
   public async getInvitationDetails(token: string): Promise<Invitation> {
     try {
       const invitation = await Invitation.findOne({
-        where: { token },
+        where: {
+          token,
+          status: {
+            [Op.ne]: INVITATION_STATUS.COMPLETED,
+          },
+        },
       });
 
       if (!invitation) {
         throw new Error("Invitation not found.");
       }
 
-      if (invitation.expires_at < new Date()) {
+      if (invitation.expiresAt < new Date()) {
         invitation.status = "expired";
-        invitation.updated_at = new Date();
+        invitation.updatedAt = new Date();
         await invitation.save();
 
         throw new Error("Invitation expired.");
@@ -73,6 +79,21 @@ class InvitationRepository {
     } catch (error: any) {
       throw new Error(error?.message || "Unable to find invitation.");
     }
+  }
+
+  public async markInvitationAsCompleted(
+    token: string,
+    transaction?: Transaction
+  ) {
+    return await Invitation.update(
+      {
+        status: INVITATION_STATUS.COMPLETED,
+        deleted_at: new Date(),
+        completed_at: new Date(),
+        updated_at: new Date(),
+      },
+      { where: { token }, transaction }
+    );
   }
 }
 

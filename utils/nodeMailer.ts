@@ -147,7 +147,7 @@ export async function sendInvitationEmail(
                           <tr>
                             <td style="padding-bottom: 20px; text-align: left">
                               <a
-                                href="${FRONTEND_URL}/profile-signup?token=${token}"
+                                href="${FRONTEND_URL}/auth/sign-up?token=${token}"
                                 style="
                                   display: inline-block;
                                   background-color: #5242ed;

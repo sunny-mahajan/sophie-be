@@ -28,6 +28,8 @@ export enum ENTITY_TYPE {
   USER = "USER",
 }
 
+export const PHONE_PATTERN = /^\(\d{3}\) \d{3}-\d{4}$/;
+
 export const DEFAULT_PAGE_SIZE: number = 10;
 
 export const MONTH_NAMES: string[] = [

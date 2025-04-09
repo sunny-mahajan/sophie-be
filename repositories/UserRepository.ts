@@ -1,11 +1,12 @@
 import User from "@models/User";
 import { Permission, Role } from "@models";
 import { Transaction } from "sequelize";
+import { IUserCreateAttributes } from "types/user";
 
 class UserRepository {
   async getUserByEmail(email: string): Promise<User | null> {
     const user = await User.findOne({
-      attributes: ["id", "password_hash", "email", "first_name", "last_name"],
+      attributes: ["id", "passwordHash", "email", "firstName", "lastName"],
       where: { email },
       include: [
         {
@@ -33,12 +34,15 @@ class UserRepository {
     options?: { transaction?: Transaction }
   ) {
     await User.update(
-      { refresh_token: token },
+      { refreshToken: token },
       {
         where: { id: userId },
         ...options,
       }
     );
+  }
+  async create(data: IUserCreateAttributes, transaction?: Transaction) {
+    return await User.create(data, { transaction });
   }
 }
 

@@ -34,12 +34,14 @@ const sendSuccessResponse = <T>(
 const sendErrorResponse = (
   res: Response,
   message: string = "An error occurred",
-  statusCode: number = 500
+  statusCode: number = 500,
+  validationErrors: string[] = []
 ): Response => {
   // Construct the response body with error status and message
   const responseBody: StandardResponse<{ message: string }> = {
     status: "error",
     data: message,
+    ...(validationErrors.length > 0 ? { validationErrors } : {}),
   };
 
   logger.error(`Status code: ${statusCode}`);

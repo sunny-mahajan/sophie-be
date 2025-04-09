@@ -130,19 +130,19 @@ export class AuthController {
     }
   }
   public async signUpThroughInvitation(req: Request, res: Response) {
-    const {
-      token = "",
-      email,
-      firstName,
-      lastName,
-      phone,
-      password,
-      address,
-      city,
-      state,
-      zip,
-      imageUrl,
-    } = req.body;
+    try {
+      await AuthService.signUpThroughInvitation(req.body);
+      sendSuccessResponse(res, {
+        message: "Sign Up Successful",
+      });
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+
+      sendErrorResponse(res, errorMessage, 500);
+    }
   }
 }
 

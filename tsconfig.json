@@ -28,7 +28,8 @@
       "@services/*": ["services/*"],
       "@repositories/*": ["repositories/*"],
       "@config/*": ["config/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@validations/*": ["validations/*"]
     },
     "moduleResolution": "node",
     "typeRoots": ["types", "./node_modules/@types"]

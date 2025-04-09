@@ -1,9 +1,15 @@
 import { Request, RequestHandler, Response, Router } from "express";
+
+import { authenticate } from "@middlewares/authentication";
+import requirePermission from "@middlewares/requirePermission";
+import { validate } from "@middlewares/validate";
+
+import { invitationSignupSchema } from "@validations/invitation-signup";
+
 import AuthController, {
   loginRateLimiter,
 } from "@controllers/auth/AuthController";
-import { authenticate } from "@middlewares/authentication";
-import requirePermission from "@middlewares/requirePermission";
+
 import { PERMISSIONS } from "@config/appConstants";
 
 const router: Router = Router();
@@ -60,15 +66,11 @@ const router: Router = Router();
  *                       type: number
  *                     email:
  *                       type: string
- *                     first_name:
+ *                     firstName:
  *                       type: string
- *                     last_name:
+ *                     lastName:
  *                       type: string
  *                     role:
- *                       type: string
- *                     parentEntityId:
- *                       type: number
- *                     parentEntityType:
  *                       type: string
  *       400:
  *         description: Email and password are required
@@ -188,8 +190,8 @@ router.post(
  *                   description: Invitation details
  *                   example:
  *                     email: user@email.com
- *                     invited_by: admin@email.com
- *                     expires_at: 2025-04-10T12:00:00.000Z
+ *                     invitedBy: admin@email.com
+ *                     expiresAt: 2025-04-10T12:00:00.000Z
  *       400:
  *         description: Missing or invalid token
  *       422:
@@ -199,5 +201,92 @@ router.post(
  */
 router.get("/invitation-details", AuthController.getInvitationDetails);
 
-router.get("/invitation/sign-up", AuthController.signUpThroughInvitation);
+/**
+ * @swagger
+ * /auth/invitation/sign-up:
+ *   post:
+ *     summary: Sign up a user through an invitation token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - email
+ *               - firstName
+ *               - lastName
+ *               - phone
+ *               - password
+ *               - streetAddress
+ *               - city
+ *               - state
+ *               - zip
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Invitation token sent to the user
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email of the invited user
+ *               firstName:
+ *                 type: string
+ *                 description: First name of the user
+ *               lastName:
+ *                 type: string
+ *                 description: Last name of the user
+ *               phone:
+ *                 type: string
+ *                 description: Phone number of the user
+ *               password:
+ *                 type: string
+ *                 minLength: 8
+ *                 maxLength: 24
+ *                 description: User's password
+ *               streetAddress:
+ *                 type: string
+ *                 description: Street Address of the user
+ *               city:
+ *                 type: string
+ *                 description: City
+ *               state:
+ *                 type: string
+ *                 description: State
+ *               zip:
+ *                 type: string
+ *                 pattern: '(^\d{5}$)|(^\d{5}-\d{4}$)'
+ *                 description: ZIP code (5-digit or ZIP+4)
+ *               imageUrl:
+ *                 type: string
+ *                 description: Optional image URL
+ *           example:
+ *             token: "your-invitation-token"
+ *             email: "john@example.com"
+ *             firstName: "John"
+ *             lastName: "Doe"
+ *             phone: "+1234567890"
+ *             password: "SecureP@ss123"
+ *             streetAddress: "123 Main Street"
+ *             city: "New York"
+ *             state: "NY"
+ *             zip: "10001"
+ *             imageUrl: "https://example.com/profile.jpg"
+ *     responses:
+ *       200:
+ *         description: User signed up successfully
+ *       400:
+ *         description: Invalid input data
+ *       422:
+ *         description: Validation failed
+ *       500:
+ *         description: Internal server error
+ */
+router.post(
+  "/invitation/sign-up",
+  validate(invitationSignupSchema),
+  AuthController.signUpThroughInvitation
+);
 export default router;

@@ -14,21 +14,25 @@ module.exports = {
       isEmail: true,
     },
   },
-  password_hash: {
+  passwordHash: {
     type: DataTypes.STRING,
     allowNull: false,
+    field: "password_hash",
   },
-  first_name: {
+  firstName: {
     type: DataTypes.STRING,
     allowNull: false,
+    field: "first_name",
   },
-  last_name: {
+  lastName: {
     type: DataTypes.STRING,
     allowNull: true,
+    field: "last_name",
   },
-  street_address: {
+  streetAddress: {
     type: DataTypes.STRING,
     allowNull: true,
+    field: "street_address",
   },
   city: {
     type: DataTypes.STRING,
@@ -46,36 +50,42 @@ module.exports = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  refresh_token: {
+  refreshToken: {
     type: DataTypes.STRING,
     allowNull: true,
+    field: "refresh_token",
   },
-  is_active: {
+  isActive: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
+    field: "is_active",
   },
   status: {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  last_login: {
+  lastLogin: {
     type: DataTypes.DATE,
     allowNull: true,
+    field: "last_login",
   },
-  created_at: {
+  createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
+    field: "created_at",
   },
-  updated_at: {
+  updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
     defaultValue: DataTypes.NOW,
     onUpdate: DataTypes.NOW,
+    field: "updated_at",
   },
-  deleted_at: {
+  deletedAt: {
     type: DataTypes.DATE,
     allowNull: true,
+    field: "deleted_at",
   },
 };

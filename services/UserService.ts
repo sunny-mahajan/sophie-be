@@ -5,9 +5,9 @@ import PermissionService from "@services/PermissionService";
 type UserWithRolesAndPermissions = {
   id: number;
   email: string;
-  password_hash: string;
-  first_name: string;
-  last_name: string;
+  passwordHash: string;
+  firstName: string;
+  lastName: string;
   roles: string[];
   permissions: string[];
 };
@@ -31,9 +31,9 @@ class UserService {
     return {
       id: user.id,
       email: user.email,
-      password_hash: user.password_hash,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      passwordHash: user.passwordHash,
+      firstName: user.firstName,
+      lastName: user.lastName,
       roles,
       permissions: permissions,
     };

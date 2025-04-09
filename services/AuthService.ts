@@ -11,7 +11,10 @@ import { AuthUser, InvitedUserType } from "types/types";
 import { sendSuccessResponse } from "@utils/responseHandler";
 import { generateJwtToken } from "@utils/jwt";
 import InvitationRepository from "@repositories/InvitationRepository";
-import { sendInvitationEmail } from "@utils/nodeMailer";
+import { sendInvitationEmail, sendWelcomeEmail } from "@utils/nodeMailer";
+import { getHashedPassword } from "@utils/helpers";
+import UserRoleRepository from "@repositories/UserRoleRepository";
+import RoleRepository from "@repositories/RoleRepository";
 
 const PHONE_PATTERN = /^\(\d{3}\) \d{3}-\d{4}$/;
 
@@ -59,23 +62,6 @@ const INVITE_PAYLOAD_SCHEMA = joi.object({
     .required(),
 });
 
-interface AuthResult {
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    id: number;
-    email: string;
-    first_name: string;
-    last_name: string;
-    role: string;
-    associatedUserId: number;
-    parentEntityId: number | null;
-    parentEntityType: string | null;
-  };
-  loginTime: string;
-  expiresIn: string;
-}
-
 interface TokenPayload {
   id: number;
   userId?: number;
@@ -98,8 +84,8 @@ class AuthService {
 
       if (
         !user ||
-        !user.password_hash ||
-        !(await bcrypt.compare(password, user.password_hash))
+        !user.passwordHash ||
+        !(await bcrypt.compare(password, user.passwordHash))
       ) {
         throw new Error(ERROR_MESSAGES.AUTH.AUTHENTICATION_FAILED);
       }
@@ -220,6 +206,44 @@ class AuthService {
   }
   public async getInvitationDetails(token: string): Promise<Invitation> {
     return InvitationRepository.getInvitationDetails(token);
+  }
+
+  public async signUpThroughInvitation(params: any): Promise<any> {
+    let transaction: Transaction | undefined;
+
+    try {
+      const invitation: Invitation =
+        await InvitationRepository.getInvitationDetails(params.token);
+
+      const { token, password, ...rest } = params;
+
+      const { role, email } = invitation;
+
+      const passwordHash = await getHashedPassword(password);
+
+      transaction = await sequelize.transaction();
+
+      const user = await UserRepository.create({
+        ...rest,
+        passwordHash,
+      });
+
+      // Get role id
+      const roles = await RoleRepository.getRolesByNames([role]);
+      const roleIds = roles.map((role) => role.id);
+
+      await UserRoleRepository.assignRolesToUser(user.id, roleIds);
+
+      InvitationRepository.markInvitationAsCompleted(token);
+
+      await transaction?.commit();
+
+      await sendWelcomeEmail(email, user.fullName);
+      return user;
+    } catch (error) {
+      await transaction?.rollback();
+      throw error;
+    }
   }
 }
 

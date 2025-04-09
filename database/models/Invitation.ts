@@ -9,14 +9,14 @@ class Invitation extends Model {
   declare email: string;
   declare role: string;
   declare token: string;
-  declare invited_by: number;
-  declare invited_user: number;
+  declare invitedBy: number;
+  declare invitedUser: number;
   declare status: string;
-  declare expires_at: Date;
-  declare completed_at: Date;
-  declare created_at: Date;
-  declare updated_at: Date;
-  declare deleted_at: Date;
+  declare expiresAt: Date;
+  declare completedAt: Date;
+  declare createdAt: Date;
+  declare updatedAt: Date;
+  declare deletedAt: Date;
 }
 
 Invitation.init(invitationSchema, {
