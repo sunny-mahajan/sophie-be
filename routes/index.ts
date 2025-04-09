@@ -3,12 +3,14 @@ import { RequestHandler, Router } from "express";
 const router = Router();
 
 import authRoutes from "./auth";
+import roleRoutes from "./roles";
 import { authenticate } from "@middlewares/authentication";
 import requirePermission from "@middlewares/requirePermission";
 import { PERMISSIONS } from "@config/appConstants";
 import { sendSuccessResponse } from "@utils/responseHandler";
 
 router.use("/auth", authRoutes);
+router.use("/roles", authenticate(), roleRoutes);
 
 /**
  * @swagger
@@ -93,7 +95,8 @@ router.use("/auth", authRoutes);
  *                 error:
  *                   type: string
  *                   example: "Error retrieving trainings"
- */ router.get(
+ */
+router.get(
   "/trainings",
   authenticate(),
   requirePermission(PERMISSIONS.VIEW_TRAININGS),

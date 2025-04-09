@@ -34,6 +34,8 @@ export const ERROR_MESSAGES = {
     INTERNAL_SERVER_ERROR: "Internal server error. Please try again later.",
     DB_ERROR: "Sequelize instance is not available",
     BAD_REQUEST: "Bad request. Please check your input.",
+    FAILED_TO_FETCH: (entity: string) =>
+      `Failed to fetch ${entity}. Please try again later.`,
   },
   USER_ROLES: {
     NO_SAVINGS_FOUND: (id: number) => `No savings found for user role ID ${id}`,
