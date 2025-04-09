@@ -4,6 +4,7 @@ const router = Router();
 
 import authRoutes from "./auth";
 import roleRoutes from "./roles";
+import teamRoutes from "./teams";
 import { authenticate } from "@middlewares/authentication";
 import requirePermission from "@middlewares/requirePermission";
 import { PERMISSIONS } from "@config/appConstants";
@@ -11,6 +12,7 @@ import { sendSuccessResponse } from "@utils/responseHandler";
 
 router.use("/auth", authRoutes);
 router.use("/roles", authenticate(), roleRoutes);
+router.use("/teams", authenticate(), teamRoutes);
 
 /**
  * @swagger

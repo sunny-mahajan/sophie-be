@@ -1,6 +1,6 @@
 import User from "@models/User";
 import { Permission, Role } from "@models";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { IUserCreateAttributes } from "types/user";
 
 class UserRepository {
@@ -43,6 +43,40 @@ class UserRepository {
   }
   async create(data: IUserCreateAttributes, transaction?: Transaction) {
     return await User.create(data, { transaction });
+  }
+  public async getTeamList(filter: {
+    status?: string;
+    fullName?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const where: any = {};
+    if (filter.status) where.status = filter.status;
+    if (filter.fullName) {
+      where[Op.or] = [
+        { firstName: { [Op.iLike]: `%${filter.fullName}%` } },
+        { lastName: { [Op.iLike]: `%${filter.fullName}%` } },
+      ];
+    }
+
+    const page = filter.page || 1;
+    const limit = filter.limit || 10;
+    const offset = (page - 1) * limit;
+
+    return User.findAndCountAll({
+      where,
+      include: [
+        {
+          model: Role,
+          through: { attributes: [] },
+          as: "roles",
+          attributes: ["name"],
+        },
+      ],
+      attributes: ["id", "email", "firstName", "lastName", "status"],
+      limit,
+      offset,
+    });
   }
 }
 
